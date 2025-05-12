@@ -1,0 +1,54 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+
+  airflow-webserver:
+    image: apache/airflow:2.8.1
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth'
+    volumes:
+      - C:/Users/ridim/Videos/newairflow/dags:/opt/airflow/dags
+      - C:/Users/ridim/Videos/newairflow/plugins:/opt/airflow/plugins
+      - C:/Users/ridim/Videos/newairflow/requirements.txt:/requirements.txt
+    ports:
+      - "8080:8080"
+    command: >
+      bash -c "
+      pip install --user -r /requirements.txt &&
+      airflow db migrate &&
+      airflow users create --username admin --password admin --firstname First --lastname Last --role Admin --email admin@example.com &&
+      airflow webserver
+      "
+
+  airflow-scheduler:
+    image: apache/airflow:2.8.1
+    depends_on:
+      - airflow-webserver
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    volumes:
+      - C:/Users/ridim/Videos/newairflow/dags:/opt/airflow/dags
+      - C:/Users/ridim/Videos/newairflow/plugins:/opt/airflow/plugins
+      - C:/Users/ridim/Videos/newairflow/requirements.txt:/requirements.txt
+    command: >
+      bash -c "
+      pip install --user -r /requirements.txt &&
+      airflow db migrate &&
+      airflow scheduler
+      "
+
+volumes:
+  postgres-db-volume:
