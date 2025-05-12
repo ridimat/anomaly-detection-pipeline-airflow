@@ -26,4 +26,38 @@ Pandas
 
 Public API
 
-PostgreSQL (optional extension)
+PostgreSQL (optional extension
+
+
+⚙️ Setup Instructions
+Make sure Docker Desktop is running.
+
+1. Clone the Repository
+   git clone https://github.com/your-username/anomaly-detection-pipeline-airflow.git
+   cd anomaly-detection-pipeline-airflow
+2. Build Docker Containers
+   docker-compose build --no-cache
+3. Start Airflow
+   docker-compose up -d
+   Access Airflow UI at: http://localhost:8080
+Default login:
+Username: admin
+Password: admin
+
+📌 Running the DAG
+Turn the DAG switch ON in Airflow UI
+
+Trigger manually or wait for the hourly schedule
+
+View task logs and DAG graph for output
+
+📂 Output Files
+Generated inside the /dags folder:
+
+public_data.csv: Cleaned and structured input data
+
+anomalies.csv: Records with detected spatial anomalies
+
+
+
+
